@@ -1,24 +1,58 @@
+import { useState } from "react";
+
 function MessageBoard() {
+  const [inputMessage, setInputMessage] = useState("");
+  const [message, setMessage] = useState([]);
+
   return (
     <div className="app-wrapper">
       <h1 class="app-title">Message board</h1>
       <div class="message-input-container">
-        <label>
-          <input
-            id="message-text"
-            name="message-text"
-            type="text"
-            placeholder="Enter message here"
-          />
-        </label>
-        <button className="submit-message-button">Submit</button>
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            const newMessage = [...message];
+            newMessage.push(inputMessage);
+            setMessage(newMessage);
+            setInputMessage("");
+          }}
+        >
+          <label>
+            <input
+              id="message-text"
+              name="message-text"
+              type="text"
+              placeholder="Enter message here"
+              value={inputMessage}
+              onChange={(event) => {
+                setInputMessage(event.target.value);
+              }}
+            />
+          </label>
+          <button className="submit-message-button" type="submit">
+            Submit
+          </button>
+        </form>
       </div>
-      <div class="board">
-        <div className="message">
-          <h1>Hello all ! This is first message.</h1>
-          <button className="delete-button">x</button>
-        </div>
-      </div>
+      {message.map((item, index) => {
+        return (
+          <div class="board" key={index}>
+            <div key={index} className="message">
+              {item}
+              <button
+                className="delete-button"
+                onClick={() => {
+                  const newMessage = [...message];
+                  newMessage.splice(index, 1);
+                  setMessage(newMessage);
+                }}
+              >
+                x
+              </button>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
