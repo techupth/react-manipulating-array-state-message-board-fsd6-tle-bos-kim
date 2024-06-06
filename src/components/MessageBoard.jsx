@@ -1,4 +1,25 @@
+import { useState } from "react";
+
 function MessageBoard() {
+  const [messageList, setMessageList] = useState([]);
+  const [messageInput, setMessageInput] = useState("");
+
+  const addMessage = (event) => {
+    event.preventDefault();
+    setMessageInput(event.target.value);
+    const newMessage = [...messageList];
+    newMessage.push(messageInput);
+    setMessageList(newMessage);
+    setMessageInput("");
+  };
+
+  const deleteMessage = (firstIndex) => {
+    const newMessage = [...messageList];
+    newMessage.splice(firstIndex, 1);
+    setMessageList(newMessage);
+    setMessageInput("");
+  };
+
   return (
     <div className="app-wrapper">
       <h1 class="app-title">Message board</h1>
@@ -9,15 +30,30 @@ function MessageBoard() {
             name="message-text"
             type="text"
             placeholder="Enter message here"
+            value={messageInput}
+            onChange={(event) => {
+              setMessageInput(event.target.value);
+            }}
           />
         </label>
-        <button className="submit-message-button">Submit</button>
+        <button className="submit-message-button" onClick={addMessage}>
+          Submit
+        </button>
       </div>
       <div class="board">
-        <div className="message">
-          <h1>Hello all ! This is first message.</h1>
-          <button className="delete-button">x</button>
-        </div>
+        {messageList.map((message, index) => (
+          <div className="message" key={index}>
+            <h1>{message}</h1>
+            <button
+              className="delete-button"
+              onClick={() => {
+                deleteMessage(index);
+              }}
+            >
+              x
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   );
